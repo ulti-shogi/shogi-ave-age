@@ -45,7 +45,7 @@
             font-size: 0.9em;
             color: #555;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin: 0 0 5px 0; /* ←これを変更（h2の勝手な余白を消す） */
         }
         #result-age { 
             /* スマホで1行に収まるようにフォントサイズを調整し、折り返しを禁止 */
@@ -138,10 +138,10 @@
         
         <!-- 計算結果表示エリア -->
         <div class="result-box">
-            <div class="result-title">将棋棋士の四段昇段平均年齢</div>
-            <div id="result-age">計算中...</div>
-            <div id="result-desc" class="result-desc">奨励会三段リーグ開始以降に四段に昇段した棋士（計--名）が対象</div>
-        </div>
+    <h2 class="result-title">将棋棋士の四段昇段平均年齢</h2>
+    <div id="result-age">計算中...</div>
+    <div id="result-desc" class="result-desc">奨励会三段リーグ開始以降に<br/>四段に昇段した棋士（計--名）が対象</div>
+</div>
 
         <div class="controls">
             <button id="sortOrderBtn">昇段年齢 の 昇順 ▲</button>
@@ -238,7 +238,7 @@
                 if (count > 0) {
                     let averageDays = totalDays / count;
                     document.getElementById('result-age').textContent = daysToYMD(averageDays);
-                    document.getElementById('result-desc').textContent = `奨励会三段リーグ開始以降に四段に昇段した棋士（計${count}名）が対象`;
+                    document.getElementById('result-desc').innerHTML = `奨励会三段リーグ開始以降に<br/>四段に昇段した棋士（計${count}名）が対象`;
                 } else {
                     document.getElementById('result-age').textContent = "-";
                     document.getElementById('result-desc').textContent = `対象データがありません`;
