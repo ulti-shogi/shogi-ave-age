@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>四段昇段時平均年齢</title>
+    <title>将棋棋士の四段昇段平均年齢</title>
     <style>
         /* 共通スタイル */
         body { 
@@ -270,11 +270,11 @@
                 } else if (col3Key === 'birthday') {
                     cmp = a.birthTime - b.birthTime;
                 } else if (col3Key === 'fourth') {
-                    cmp = a.fourTime - b.fourTime;
+                    cmp = a.num - b.num; // 日付ではなく棋士番号を基準に並び替える
                 }
                 return isAsc ? cmp : -cmp;
             });
-
+            
             tbody.innerHTML = '';
 
             allData.forEach((data, index) => {
