@@ -19,9 +19,9 @@
         .container {
             width: 100%;
             max-width: 900px;
-            margin: 0 auto; /* 中央寄せ */
+            margin: 0 auto;
             background: #fff;
-            padding: 15px; /* 内側の余白 */
+            padding: 15px; 
             border-radius: 8px;
             box-sizing: border-box;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -32,16 +32,36 @@
             padding-bottom: 8px;
             margin-top: 0;
         }
-        #result { 
-            font-size: 1.4em; 
-            font-weight: bold; 
-            color: #d35400; 
-            margin: 15px 0; 
+
+        /* 結果表示エリア（新デザイン） */
+        .result-box { 
             text-align: center;
             background: #fff3e0;
-            padding: 10px;
+            padding: 15px 10px;
             border-radius: 6px;
+            margin: 15px 0;
         }
+        .result-title {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #result-age { 
+            /* スマホで1行に収まるようにフォントサイズを調整し、折り返しを禁止 */
+            font-size: clamp(1.8em, 6vw, 2.5em); 
+            font-weight: bold; 
+            color: #d35400; 
+            margin: 5px 0; 
+            white-space: nowrap; 
+        }
+        .result-desc {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* コントロールパネル */
         .controls {
             display: flex;
             background: #f8f9fa;
@@ -63,15 +83,15 @@
             background-color: #1a252f;
         }
 
-        /* テーブルエリア（コンテナの外側に出し、余白をなくして広く使う） */
+        /* テーブルエリア */
         .table-wrapper {
             width: 100%;
-            max-width: 900px; /* 上のコンテナと幅を合わせる */
-            margin: 15px auto 0; /* 中央寄せ ＋ 上に15pxの隙間 */
+            max-width: 900px; 
+            margin: 15px auto 0; 
             box-sizing: border-box;
             background: #fff;
             border-radius: 8px;
-            overflow: hidden; /* 角丸からはみ出ないように */
+            overflow: hidden; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         table { 
@@ -112,16 +132,23 @@
 </head>
 <body>
 
-    <!-- 上部のコンテナ（タイトル、結果、ボタン） -->
+    <!-- 上部のコンテナ -->
     <div class="container">
-        <h1>四段昇段時 平均年齢 (番号184〜)</h1>
-        <div id="result">計算中...</div>
+        <h1>仮置き</h1>
+        
+        <!-- 計算結果表示エリア -->
+        <div class="result-box">
+            <div class="result-title">将棋棋士の四段昇段平均年齢</div>
+            <div id="result-age">計算中...</div>
+            <div id="result-desc" class="result-desc">奨励会三段リーグ開始以降に四段に昇段した棋士（計--名）が対象</div>
+        </div>
+
         <div class="controls">
             <button id="sortOrderBtn">昇段年齢 の 昇順 ▲</button>
         </div>
     </div>
 
-    <!-- テーブル用のコンテナ（外に出した部分） -->
+    <!-- テーブルエリア -->
     <div class="table-wrapper">
         <table>
             <thead>
@@ -207,18 +234,22 @@
                     }
                 }
 
+                // 【修正部分】平均の表示と人数の自動挿入
                 if (count > 0) {
                     let averageDays = totalDays / count;
-                    document.getElementById('result').textContent = `平均: ` + daysToYMD(averageDays);
+                    document.getElementById('result-age').textContent = daysToYMD(averageDays);
+                    document.getElementById('result-desc').textContent = `奨励会三段リーグ開始以降に四段に昇段した棋士（計${count}名）が対象`;
                 } else {
-                    document.getElementById('result').textContent = "-";
+                    document.getElementById('result-age').textContent = "-";
+                    document.getElementById('result-desc').textContent = `対象データがありません`;
                 }
 
                 renderTable();
             })
             .catch(error => {
                 console.error(error);
-                document.getElementById('result').textContent = "エラー";
+                document.getElementById('result-age').textContent = "エラー";
+                document.getElementById('result-desc').textContent = "データの読み込みに失敗しました。";
             });
 
         function renderTable() {
