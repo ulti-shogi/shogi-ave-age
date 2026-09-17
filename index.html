@@ -41,53 +41,38 @@
             border-radius: 6px;
         }
 
-        /* コントロールパネル（ソートスイッチ等） */
+        /* コントロールパネル */
         .controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
             margin-bottom: 15px;
             background: #f8f9fa;
             padding: 10px;
             border-radius: 6px;
-            align-items: center;
-        }
-        .controls label {
-            font-size: 0.9em;
-            font-weight: bold;
-        }
-        select, button {
-            padding: 8px;
-            font-size: 16px; /* iOSのズーム防止のため16px以上 */
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
         }
         button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
             background-color: #2c3e50;
             color: white;
-            border: none;
             cursor: pointer;
             font-weight: bold;
-            flex-grow: 1; /* スマホで押しやすいように広げる */
         }
         button:active {
             background-color: #1a252f;
         }
 
-        /* テーブルのスタイル（大きく見やすく） */
-        .table-wrapper {
-            overflow-x: auto; /* はみ出した場合はスクロール */
-        }
+        /* テーブルのスタイル */
         table { 
             border-collapse: collapse; 
             width: 100%; 
             font-size: 0.95em; 
-            min-width: 400px; /* 小さくなりすぎるのを防止 */
         }
         th, td { 
             border: 1px solid #cbd5e1; 
-            padding: 12px 6px; /* タップしやすく上下の余白を大きく */
+            padding: 12px 4px;
             text-align: center; 
             word-break: break-word;
         }
@@ -97,12 +82,13 @@
         }
         /* テーブル内のプルダウン */
         th select {
-            width: 100%;
-            padding: 4px;
-            font-size: 0.9em;
-            margin-top: 4px;
+            width: 95%;
+            padding: 6px 2px;
+            font-size: 16px; /* iOSのズーム防止用 */
             background-color: #f8f9fa;
             color: #333;
+            border-radius: 4px;
+            border: 1px solid #ccc;
         }
         tr:nth-child(even) {
             background-color: #f8fafc;
@@ -110,14 +96,19 @@
         tr:hover {
             background-color: #e2e8f0;
         }
+        
+        /* 列幅のバランス調整 */
         .no-col {
-            width: 30px;
+            width: 15%;
             color: #64748b;
             font-weight: bold;
         }
         .name-col {
             font-weight: bold;
-            width: 25%;
+            width: 35%;
+        }
+        .data-col {
+            width: 50%;
         }
     </style>
 </head>
@@ -127,48 +118,31 @@
         <h1>四段昇段時 平均年齢 (番号184〜)</h1>
         <div id="result">計算中...</div>
 
-        <!-- ソートを切り替えるスイッチ群 -->
+        <!-- ソート順（昇順/降順）切り替えボタン -->
         <div class="controls">
-            <label for="sortKey">並び替え:</label>
-            <select id="sortKey">
-                <option value="num">棋士番号</option>
-                <option value="age">昇段年齢</option>
-                <option value="fourth">四段昇段日</option>
-                <option value="birthday">生年月日</option>
-            </select>
-            <button id="sortOrderBtn">昇順 ▲</button>
+            <button id="sortOrderBtn">昇段年齢 の 昇順 ▲</button>
         </div>
         
-        <!-- 4列のテーブル -->
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>棋士名</th>
-                        <th>
-                            <select id="col3Select">
-                                <option value="birthday">生年月日</option>
-                                <option value="fourth">四段昇段日</option>
-                                <option value="age" selected>四段昇段年齢</option>
-                                <option value="num">棋士番号</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select id="col4Select">
-                                <option value="birthday">生年月日</option>
-                                <option value="fourth" selected>四段昇段日</option>
-                                <option value="age">四段昇段年齢</option>
-                                <option value="num">棋士番号</option>
-                            </select>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <!-- Javascriptでデータが挿入されます -->
-                </tbody>
-            </table>
-        </div>
+        <!-- 3列のテーブル -->
+        <table>
+            <thead>
+                <tr>
+                    <th class="no-col">No.</th>
+                    <th class="name-col">棋士名</th>
+                    <th class="data-col">
+                        <select id="col3Select">
+                            <option value="age" selected>四段昇段年齢</option>
+                            <option value="fourth">四段昇段日</option>
+                            <option value="birthday">生年月日</option>
+                            <option value="num">棋士番号</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Javascriptでデータが挿入されます -->
+            </tbody>
+        </table>
     </div>
 
     <script>
@@ -223,16 +197,16 @@
                             
                             let ageText = `${y}歳${m}ヶ月${d}日`;
 
-                            // 配列にオブジェクトとして保存
+                            // 配列に保存
                             allData.push({
                                 num: num,
                                 name: name,
                                 birthdayStr: birthdayStr,
                                 fourStr: fourStr,
                                 ageText: ageText,
-                                diffDays: diffDays,      // 年齢ソート用
-                                birthTime: birth.getTime(), // 誕生日ソート用
-                                fourTime: four.getTime()    // 昇段日ソート用
+                                diffDays: diffDays,      
+                                birthTime: birth.getTime(), 
+                                fourTime: four.getTime()    
                             });
                         }
                     }
@@ -257,20 +231,24 @@
         // テーブルの描画関数
         function renderTable() {
             const tbody = document.getElementById('table-body');
-            const sortKey = document.getElementById('sortKey').value;
-            const col3Key = document.getElementById('col3Select').value;
-            const col4Key = document.getElementById('col4Select').value;
+            const col3Select = document.getElementById('col3Select');
+            const col3Key = col3Select.value;
+            const col3Text = col3Select.options[col3Select.selectedIndex].text;
 
-            // データの並び替え（ソート）
+            // ボタンのテキストを更新（連動していることを明示）
+            const btn = document.getElementById('sortOrderBtn');
+            btn.textContent = `${col3Text} の ${isAsc ? '昇順 ▲' : '降順 ▼'}`;
+
+            // データの並び替え（3列目の項目と連動）
             allData.sort((a, b) => {
                 let cmp = 0;
-                if (sortKey === 'num') {
+                if (col3Key === 'num') {
                     cmp = a.num - b.num;
-                } else if (sortKey === 'age') {
+                } else if (col3Key === 'age') {
                     cmp = a.diffDays - b.diffDays;
-                } else if (sortKey === 'birthday') {
+                } else if (col3Key === 'birthday') {
                     cmp = a.birthTime - b.birthTime;
-                } else if (sortKey === 'fourth') {
+                } else if (col3Key === 'fourth') {
                     cmp = a.fourTime - b.fourTime;
                 }
                 
@@ -278,7 +256,7 @@
                 return isAsc ? cmp : -cmp;
             });
 
-            // テーブルの中身を一度リセット
+            // テーブルの中身リセット
             tbody.innerHTML = '';
 
             // 描画
@@ -287,8 +265,7 @@
                 tr.innerHTML = `
                     <td class="no-col">${index + 1}</td>
                     <td class="name-col">${data.name}</td>
-                    <td>${getColValue(col3Key, data)}</td>
-                    <td>${getColValue(col4Key, data)}</td>
+                    <td class="data-col">${getColValue(col3Key, data)}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -312,19 +289,20 @@
             return `${y}歳${m}ヶ月${d}日`;
         }
 
-        /* --- イベントリスナー（操作時の動作設定） --- */
+        /* --- イベントリスナー --- */
         
         // ソート順（昇順/降順）切り替えボタン
         document.getElementById('sortOrderBtn').addEventListener('click', function() {
             isAsc = !isAsc;
-            this.textContent = isAsc ? '昇順 ▲' : '降順 ▼';
             renderTable();
         });
 
-        // プルダウン変更時にテーブルを再描画
-        document.getElementById('sortKey').addEventListener('change', renderTable);
-        document.getElementById('col3Select').addEventListener('change', renderTable);
-        document.getElementById('col4Select').addEventListener('change', renderTable);
+        // 3列目のプルダウン変更時にテーブルを再描画
+        document.getElementById('col3Select').addEventListener('change', function() {
+            // 項目を変えた時は、混乱を防ぐため自動的に「昇順」に戻す
+            isAsc = true; 
+            renderTable();
+        });
 
     </script>
 </body>
