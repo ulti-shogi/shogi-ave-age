@@ -31,11 +31,6 @@
             margin: 20px 0; 
             text-align: center;
         }
-        .note { 
-            font-size: 0.9em; 
-            color: #7f8c8d; 
-            text-align: right;
-        }
         table { 
             border-collapse: collapse; 
             width: 100%; 
@@ -63,8 +58,7 @@
     <div class="container">
         <h1>奨励会三段リーグ開始以降（棋士番号184以降）の四段昇段時 平均年齢</h1>
         <div id="result">計算中...</div>
-        <p class="note">※1年は365.2425日、1ヶ月はその1/12（約30.4368日）として概算しています。</p>
-
+        
         <table>
             <thead>
                 <tr>
@@ -82,90 +76,90 @@
     </div>
 
     <script>
-        // kishi-data.txt を読み込む
         fetch('kishi-data.txt')
             .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error('データ読み込み失敗');
                 return response.text();
             })
-            .then(text => {
-                const lines = text.trim().split('\n');
-                const dataLines = lines.slice(1); // ヘッダー行をスキップ
+            .then(csvText => {
+                // average.js と同じパース処理
+                const lines = csvText.replace(/\r/g, '').split('\n').filter(line => line.trim() !== '');
+                const tbody = document.getElementById('table-body');
                 
                 let totalDays = 0;
                 let count = 0;
-                const tbody = document.getElementById('table-body');
 
-                dataLines.forEach(line => {
-                    // 空行をスキップ
-                    if (!line.trim()) return;
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(',');
+                    if (row.length < 4) continue;
 
-                    const cols = line.split(',');
-                    const num = parseInt(cols[0], 10);
-                    const name = cols[1];
-                    const birthdayStr = cols[2];
-                    const fourthStr = cols[3];
+                    let num = parseInt(row[0], 10);
+                    let name = row[1];
+                    let birthdayStr = row[2];
+                    let fourStr = row[3];
 
-                    // 棋士番号184以降を対象とし、データが存在するかチェック
-                    if (num >= 184 && birthdayStr && fourthStr) {
-                        const birth = new Date(birthdayStr);
-                        const fourth = new Date(fourthStr);
+                    // 棋士番号184以降で、データが存在する人のみ対象
+                    if (num >= 184 && birthdayStr && fourStr) {
+                        let birth = new Date(birthdayStr);
+                        let four = new Date(fourStr);
                         
-                        // ミリ秒の差分から日数を計算
-                        const diffTime = fourth.getTime() - birth.getTime();
-                        const diffDays = diffTime / (1000 * 60 * 60 * 24);
-                        
-                        totalDays += diffDays;
-                        count++;
+                        if (!isNaN(birth.getTime()) && !isNaN(four.getTime())) {
+                            // 【1. 平均計算用の正確な日数（ミリ秒計算）】
+                            let diffDays = (four.getTime() - birth.getTime()) / (1000 * 60 * 60 * 24);
+                            totalDays += diffDays;
+                            count++;
 
-                        // 各個人の年齢を計算
-                        const { years, months, days } = convertDaysToYMD(diffDays);
+                            // 【2. 個人の年齢表示用のカレンダー計算（average.jsと同一）】
+                            let y = four.getFullYear() - birth.getFullYear();
+                            let m = four.getMonth() - birth.getMonth();
+                            let d = four.getDate() - birth.getDate();
+                            
+                            if (d < 0) {
+                                m--;
+                                let prevMonth = new Date(four.getFullYear(), four.getMonth(), 0); 
+                                d += prevMonth.getDate();
+                            }
+                            if (m < 0) {
+                                y--;
+                                m += 12;
+                            }
+                            
+                            let ageText = `${y}歳${m}ヶ月${d}日`;
 
-                        // テーブルに行を追加
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${num}</td>
-                            <td>${name}</td>
-                            <td>${birthdayStr}</td>
-                            <td>${fourthStr}</td>
-                            <td>${years}歳${months}ヶ月${days}日</td>
-                        `;
-                        tbody.appendChild(tr);
+                            // テーブルに行を追加
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${num}</td>
+                                <td>${name}</td>
+                                <td>${birthdayStr}</td>
+                                <td>${fourStr}</td>
+                                <td>${ageText}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        }
                     }
-                });
+                }
 
-                // 平均の計算と表示
+                // 【3. 平均年齢の計算と表示】
                 if (count > 0) {
-                    const avgDays = totalDays / count;
-                    const { years, months, days } = convertDaysToYMD(avgDays);
-                    document.getElementById('result').innerText = `平均: ${years}歳${months}ヶ月${days}日`;
+                    let averageDays = totalDays / count;
+                    document.getElementById('result').textContent = `平均: ` + daysToYMD(averageDays);
                 } else {
-                    document.getElementById('result').innerText = "対象データが見つかりませんでした。";
+                    document.getElementById('result').textContent = "-";
                 }
             })
             .catch(error => {
-                console.error("エラー:", error);
-                document.getElementById('result').innerText = "データ読み込みエラー";
-                document.getElementById('result').style.color = "red";
+                console.error(error);
+                document.getElementById('result').textContent = "エラー";
             });
 
-        /**
-         * 日数を「〇年〇ヶ月〇日」に変換する関数
-         * ※閏年を考慮したグレゴリオ暦の平均日数（1年=365.2425日）を使用
-         */
-        function convertDaysToYMD(totalDays) {
-            const daysInYear = 365.2425;
-            const daysInMonth = daysInYear / 12;
-
-            const years = Math.floor(totalDays / daysInYear);
-            let remainder = totalDays - (years * daysInYear);
-            
-            const months = Math.floor(remainder / daysInMonth);
-            remainder = remainder - (months * daysInMonth);
-            
-            const days = Math.round(remainder);
-
-            return { years, months, days };
+        // 【平均値用の変換関数（average.jsと同一）】
+        function daysToYMD(totalDays) {
+            let y = Math.floor(totalDays / 365.2425);
+            let rem = totalDays % 365.2425;
+            let m = Math.floor(rem / 30.436875);
+            let d = Math.floor(rem % 30.436875);
+            return `${y}歳${m}ヶ月${d}日`;
         }
     </script>
 </body>
