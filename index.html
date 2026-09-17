@@ -1,43 +1,172 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>最低賃金との差を計算するツール</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css?v=2026-0103-1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四段昇段時平均年齢（棋士番号184以降）</title>
+    <style>
+        body { 
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; 
+            padding: 20px; 
+            line-height: 1.6; 
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            font-size: 1.5em; 
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        #result { 
+            font-size: 2.5em; 
+            font-weight: bold; 
+            color: #d35400; 
+            margin: 20px 0; 
+            text-align: center;
+        }
+        .note { 
+            font-size: 0.9em; 
+            color: #7f8c8d; 
+            text-align: right;
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            margin-top: 30px; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: center; 
+        }
+        th { 
+            background-color: #2c3e50;
+            color: white; 
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9f7ef;
+        }
+    </style>
 </head>
 <body>
-<main>
-  <h1>最低賃金計算ツール</h1>
 
-  <p>あなたの時給は最低賃金よりも何％高い？</p>
+    <div class="container">
+        <h1>奨励会三段リーグ開始以降（棋士番号184以降）の四段昇段時 平均年齢</h1>
+        <div id="result">計算中...</div>
+        <p class="note">※1年は365.2425日、1ヶ月はその1/12（約30.4368日）として概算しています。</p>
 
-  <div class="layout">
-    <!-- 左カラム：①地方 ②都道府県 ③時給 ④ボタン -->
-    <div class="layout-left">
-      <label>
-    ①都道府県を選択（地方別）
-    <select id="pref">
-    <option value="">選択してください</option>
-    <!-- JSで optgroup + option を自動追加 -->
-    </select>
-    </label>
-
-      <label>
-        ②時給を入力する（半角数字）
-        <input id="wage" type="number" min="1" step="1" inputmode="numeric" placeholder="例：1200">
-      </label>
-
-      <button id="calcButton" type="button">計算する</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>棋士番号</th>
+                    <th>名前</th>
+                    <th>生年月日</th>
+                    <th>四段昇段日</th>
+                    <th>昇段時年齢</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Javascriptでデータが挿入されます -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- 右カラム：結果＋注意書き -->
-    <div class="layout-right">
-      <div id="result"></div>
-      
-    </div>
-  </div>
-</main>
-<script src="script.js?v=20260103-d"></script>
+    <script>
+        // kishi-data.txt を読み込む
+        fetch('kishi-data.txt')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(text => {
+                const lines = text.trim().split('\n');
+                const dataLines = lines.slice(1); // ヘッダー行をスキップ
+                
+                let totalDays = 0;
+                let count = 0;
+                const tbody = document.getElementById('table-body');
+
+                dataLines.forEach(line => {
+                    // 空行をスキップ
+                    if (!line.trim()) return;
+
+                    const cols = line.split(',');
+                    const num = parseInt(cols[0], 10);
+                    const name = cols[1];
+                    const birthdayStr = cols[2];
+                    const fourthStr = cols[3];
+
+                    // 棋士番号184以降を対象とし、データが存在するかチェック
+                    if (num >= 184 && birthdayStr && fourthStr) {
+                        const birth = new Date(birthdayStr);
+                        const fourth = new Date(fourthStr);
+                        
+                        // ミリ秒の差分から日数を計算
+                        const diffTime = fourth.getTime() - birth.getTime();
+                        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+                        
+                        totalDays += diffDays;
+                        count++;
+
+                        // 各個人の年齢を計算
+                        const { years, months, days } = convertDaysToYMD(diffDays);
+
+                        // テーブルに行を追加
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${num}</td>
+                            <td>${name}</td>
+                            <td>${birthdayStr}</td>
+                            <td>${fourthStr}</td>
+                            <td>${years}歳${months}ヶ月${days}日</td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                });
+
+                // 平均の計算と表示
+                if (count > 0) {
+                    const avgDays = totalDays / count;
+                    const { years, months, days } = convertDaysToYMD(avgDays);
+                    document.getElementById('result').innerText = `平均: ${years}歳${months}ヶ月${days}日`;
+                } else {
+                    document.getElementById('result').innerText = "対象データが見つかりませんでした。";
+                }
+            })
+            .catch(error => {
+                console.error("エラー:", error);
+                document.getElementById('result').innerText = "データ読み込みエラー";
+                document.getElementById('result').style.color = "red";
+            });
+
+        /**
+         * 日数を「〇年〇ヶ月〇日」に変換する関数
+         * ※閏年を考慮したグレゴリオ暦の平均日数（1年=365.2425日）を使用
+         */
+        function convertDaysToYMD(totalDays) {
+            const daysInYear = 365.2425;
+            const daysInMonth = daysInYear / 12;
+
+            const years = Math.floor(totalDays / daysInYear);
+            let remainder = totalDays - (years * daysInYear);
+            
+            const months = Math.floor(remainder / daysInMonth);
+            remainder = remainder - (months * daysInMonth);
+            
+            const days = Math.round(remainder);
+
+            return { years, months, days };
+        }
+    </script>
 </body>
 </html>
