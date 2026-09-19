@@ -10,9 +10,26 @@
 <body>
 
     <div class="container">
-        <h1>棋士番号184以降の将棋棋士の四段昇段平均年齢</h1>
+        <h1>棋士番号184以降の四段昇段平均年齢</h1>
         <div id="output">データを計算中です...</div><!--←#output-->
     </div><!--←.container-->
+
+    <!-- ▼ ここからテーブル用のコンテナを追加 ▼ -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>通し番号</th>
+                    <th>棋士名</th>
+                    <th>四段昇段年齢</th>
+                    <th>棋士番号</th>
+                </tr>
+            </thead><!--←thead-->
+            <tbody id="table-body">
+                <!-- ここにJavaScriptでテーブルの中身が挿入されます -->
+            </tbody><!--←#table-body-->
+        </table><!--←table-->
+    </div><!--←.table-container-->
 
     <!-- JavaScriptファイルを読み込む -->
     <script src="script.js"></script>

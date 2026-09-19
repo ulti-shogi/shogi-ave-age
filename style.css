@@ -2,10 +2,12 @@ body {
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
     background-color: #f7f9fc;
     color: #333;
-    padding: 40px 20px;
+    padding: 20px;
     display: flex;
-    justify-content: center;
-}
+    flex-direction: column; /* ←縦並びに変更 */
+    align-items: center;    /* ←中央揃え */
+} /*←body*/
+
 .container {
     background-color: #fff;
     padding: 30px 40px;
@@ -13,29 +15,76 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     max-width: 600px;
     width: 100%;
-}
+    box-sizing: border-box;
+} /*←.container*/
+
 h1 {
     font-size: 1.5rem;
     border-bottom: 2px solid #2c3e50;
     padding-bottom: 10px;
     margin-bottom: 20px;
-}
+} /*←h1*/
+
 .result-box {
     background-color: #e8f4f8;
     padding: 20px;
     border-radius: 6px;
     margin-top: 20px;
-}
+} /*←.result-box*/
+
 .result-box h2 {
     margin: 0 0 10px 0;
     color: #0056b3;
     font-size: 1.8rem;
-}
+} /*←.result-box h2*/
+
 p {
     margin: 8px 0;
     font-size: 1.1rem;
-}
+} /*←p*/
+
 .error {
     color: #d9534f;
     font-weight: bold;
-}
+} /*←.error*/
+
+
+/* ▼ テーブル用のスタイル ▼ */
+.table-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    width: 100%;
+    max-width: 1000px; /* 出来る限り大きく表示 */
+    box-sizing: border-box;
+} /*←.table-container*/
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+} /*←table*/
+
+table th, table td {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 5px;
+    text-align: center;
+    font-size: 1rem;
+} /*←table th, table td*/
+
+table th {
+    background-color: #f2f6f9;
+    font-weight: bold;
+} /*←table th*/
+
+/* スマホ向け（画面幅が600px以下）の場合の調整 */
+@media (max-width: 600px) {
+    .table-container {
+        padding: 10px;
+    } /*←.table-container (@media)*/
+    table th, table td {
+        padding: 8px 2px; /* 余白を詰める */
+        font-size: 0.85rem; /* フォントサイズを少し小さくして4列収める */
+    } /*←table th, table td (@media)*/
+} /*←@media (max-width: 600px)*/
