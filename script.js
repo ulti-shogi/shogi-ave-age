@@ -99,18 +99,22 @@ async function initializeApp() {
             avgMonths += 12;
         } //←if (avgMonths < 0)
 
+        // ▼ ご要望に合わせてHTML出力を変更 ▼
         const outputHtml = `
-            <p>対象人数： <strong>${targetCount} 名</strong></p>
-            <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
-            <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
             <div class="result-box">
-                <h2>${avgYears}歳 ${avgMonths}ヶ月 ${avgDays}日</h2>
+                <div class="result-title">将棋棋士の四段昇段平均年齢</div>
+                <div class="result-age">${avgYears}歳 ${avgMonths}ヶ月 ${avgDays}日</div>
+                <div class="result-desc">現行の奨励会三段リーグ開始以降に四段に昇段した計${targetCount}名が対象</div>
             </div><!--←.result-box-->
+            <div class="avg-dates">
+                <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
+                <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
+            </div><!--←.avg-dates-->
         `;
         document.getElementById('output').innerHTML = outputHtml;
 
-        // ▼ 初期表示とソートイベントの設定 ▼
-        kishiList.sort((a, b) => a.num - b.num); // 初期状態は棋士番号順
+        // 初期表示とソートイベントの設定
+        kishiList.sort((a, b) => a.num - b.num);
         renderTable();
         setupSortButtons();
 
