@@ -8,6 +8,19 @@ body {
     align-items: center;
 } /*←body*/
 
+/* ▼ h1のスタイルをコンテナ外用に調整 ▼ */
+h1 {
+    font-size: 1.8rem; /* 少し大きくしました */
+    color: #3e2723;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    border-bottom: 2px solid #5a3d2b;
+    padding-bottom: 10px;
+    width: 100%;
+    max-width: 600px; /* 下線が広がりすぎないように制限 */
+} /*←h1*/
+
 .container {
     background-color: #f4e8c1;
     padding: 30px 40px;
@@ -19,19 +32,11 @@ body {
     border: 2px solid #5a3d2b;
 } /*←.container*/
 
-h1 {
-    font-size: 1.5rem;
-    border-bottom: 2px solid #5a3d2b;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #3e2723;
-} /*←h1*/
-
 .result-box {
     background-color: #dfc894;
     padding: 20px;
     border-radius: 2px;
-    margin-top: 20px;
+    margin-top: 10px; /* h1が抜けたので上の余白を調整 */
     border: 1px solid #a68a5c;
 } /*←.result-box*/
 
@@ -100,6 +105,13 @@ table th {
         padding: 5px;
     } /*←body (@media)*/
 
+    h1 {
+        font-size: 1.3rem; /* スマホでも少し大きく */
+        margin-bottom: 15px;
+        border-bottom: none; /* スマホでは下線を消してスッキリさせる */
+        padding-bottom: 0;
+    } /*←h1 (@media)*/
+
     .container {
         padding: 15px 10px;
     } /*←.container (@media)*/
@@ -114,7 +126,7 @@ table th {
     } /*←table th, table td (@media)*/
 
     .sort-btn {
-        padding: 2px 4px; /* スマホではボタンも少し小さく */
+        padding: 2px 4px; 
         font-size: 0.7rem;
     } /*←.sort-btn (@media)*/
 } /*←@media (max-width: 600px)*/
