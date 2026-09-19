@@ -14,22 +14,20 @@
         <div id="output">データを計算中です...</div><!--←#output-->
     </div><!--←.container-->
 
-    <!-- ▼ ここからテーブル用のコンテナを追加 ▼ -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>棋士名</th>
-                    <th>四段昇段年齢</th>
-                    <th>棋士番号</th>
-                </tr>
-            </thead><!--←thead-->
-            <tbody id="table-body">
-                <!-- ここにJavaScriptでテーブルの中身が挿入されます -->
-            </tbody><!--←#table-body-->
-        </table><!--←table-->
-    </div><!--←.table-container-->
+    <!-- ▼ テーブルコンテナを廃止し、直接テーブルを配置 ▼ -->
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>棋士名</th>
+                <th>四段昇段年齢</th>
+                <th>棋士番号</th>
+            </tr>
+        </thead><!--←thead-->
+        <tbody id="table-body">
+            <!-- ここにJavaScriptでテーブルの中身が挿入されます -->
+        </tbody><!--←#table-body-->
+    </table><!--←table-->
 
     <!-- JavaScriptファイルを読み込む -->
     <script src="script.js"></script>
