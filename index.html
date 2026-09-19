@@ -2,317 +2,147 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>将棋棋士の四段昇段平均年齢</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>将棋棋士 四段昇段平均年齢</title>
     <style>
-        /* 共通スタイル */
-        body { 
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; 
-            padding: 10px; 
-            line-height: 1.4; 
-            background-color: #f0f2f5;
-            margin: 0;
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background-color: #f7f9fc;
             color: #333;
-        }
-        
-        /* 上部の情報エリア */
-        .container {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 15px; 
-            border-radius: 8px;
-            box-sizing: border-box;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        h1 { 
-            font-size: 1.2em; 
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 8px;
-            margin-top: 0;
-        }
-
-        /* 結果表示エリア（新デザイン） */
-        .result-box { 
-            text-align: center;
-            background: #fff3e0;
-            padding: 15px 10px;
-            border-radius: 6px;
-            margin: 15px 0;
-        }
-        .result-title {
-    font-size: 1.3em;  /* 文字を大きく（標準の1.3倍程度に） */
-    color: #333;       /* 色を少し濃く（黒に近い色に） */
-    font-weight: bold;
-    margin: 0 0 10px 0; /* 下の年齢との余白を少し広げる */
-}
-        #result-age { 
-            /* スマホで1行に収まるようにフォントサイズを調整し、折り返しを禁止 */
-            font-size: clamp(1.8em, 6vw, 2.5em); 
-            font-weight: bold; 
-            color: #d35400; 
-            margin: 5px 0; 
-            white-space: nowrap; 
-        }
-        .result-desc {
-            font-size: 0.85em;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        /* コントロールパネル */
-        .controls {
+            padding: 40px 20px;
             display: flex;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 6px;
+            justify-content: center;
         }
-        button {
+        .container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
             width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #2c3e50;
-            color: white;
-            cursor: pointer;
+        }
+        h1 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .result-box {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .result-box h2 {
+            margin: 0 0 10px 0;
+            color: #0056b3;
+            font-size: 1.8rem;
+        }
+        p {
+            margin: 8px 0;
+            font-size: 1.1rem;
+        }
+        .error {
+            color: #d9534f;
             font-weight: bold;
         }
-        button:active {
-            background-color: #1a252f;
-        }
-
-        /* テーブルエリア */
-        .table-wrapper {
-            width: 100%;
-            max-width: 900px; 
-            margin: 15px auto 0; 
-            box-sizing: border-box;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        table { 
-            border-collapse: collapse; 
-            width: 100%; 
-            font-size: 0.95em; 
-        }
-        th, td { 
-            border: 1px solid #cbd5e1; 
-            padding: 12px 4px;
-            text-align: center; 
-            word-break: break-word;
-        }
-        th { 
-            background-color: #2c3e50;
-            color: white; 
-        }
-        th select {
-            width: 95%;
-            padding: 6px 2px;
-            font-size: 16px; 
-            background-color: #f8f9fa;
-            color: #333;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-        tr:hover {
-            background-color: #e2e8f0;
-        }
-        
-        .no-col { width: 15%; color: #64748b; font-weight: bold; }
-        .name-col { font-weight: bold; width: 35%; }
-        .data-col { width: 50%; }
     </style>
 </head>
 <body>
 
-    <!-- 上部のコンテナ -->
     <div class="container">
-        <h1>仮置き</h1>
-        
-        <!-- 計算結果表示エリア -->
-        <div class="result-box">
-    <h2 class="result-title">将棋棋士の四段昇段平均年齢</h2>
-    <div id="result-age">計算中...</div>
-    <div id="result-desc" class="result-desc">奨励会三段リーグ開始以降に<br/>四段に昇段した棋士（計--名）が対象</div>
-</div>
-
-        <div class="controls">
-            <button id="sortOrderBtn">昇段年齢 の 昇順 ▲</button>
-        </div>
-    </div>
-
-    <!-- テーブルエリア -->
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th class="no-col">No.</th>
-                    <th class="name-col">棋士名</th>
-                    <th class="data-col">
-                        <select id="col3Select">
-                            <option value="age" selected>四段昇段年齢</option>
-                            <option value="fourth">四段昇段日</option>
-                            <option value="birthday">生年月日</option>
-                            <option value="num">棋士番号</option>
-                        </select>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Javascriptでデータが挿入されます -->
-            </tbody>
-        </table>
+        <h1>棋士番号184以降の四段昇段平均年齢</h1>
+        <div id="output">データを計算中です...</div>
     </div>
 
     <script>
-        let allData = [];
-        let isAsc = true; 
-
-        fetch('kishi-data.txt')
-            .then(response => {
-                if (!response.ok) throw new Error('データ読み込み失敗');
-                return response.text();
-            })
-            .then(csvText => {
-                const lines = csvText.replace(/\r/g, '').split('\n').filter(line => line.trim() !== '');
+        async function calculateAverageAge() {
+            try {
+                // kishi-data.txt を読み込む
+                const response = await fetch('kishi-data.txt');
+                if (!response.ok) {
+                    throw new Error('ファイルの読み込みに失敗しました。');
+                }
+                const text = await response.text();
+                const lines = text.trim().split('\n');
                 
-                let totalDays = 0;
-                let count = 0;
+                let targetCount = 0;
+                let totalBirthTimestamp = 0;
+                let totalFourthTimestamp = 0;
 
+                // ヘッダー行（0行目）を飛ばしてループ処理
                 for (let i = 1; i < lines.length; i++) {
-                    const row = lines[i].split(',');
-                    if (row.length < 4) continue;
+                    const cols = lines[i].split(',');
+                    if (cols.length < 4) continue;
 
-                    let num = parseInt(row[0], 10);
-                    let name = row[1];
-                    let birthdayStr = row[2];
-                    let fourStr = row[3];
-
-                    if (num >= 184 && birthdayStr && fourStr) {
-                        let birth = new Date(birthdayStr);
-                        let four = new Date(fourStr);
+                    const num = parseInt(cols[0], 10);
+                    
+                    // 棋士番号184以降のみを対象とする
+                    if (num >= 184) {
+                        const birthDate = new Date(cols[2]);
+                        const fourthDate = new Date(cols[3]);
                         
-                        if (!isNaN(birth.getTime()) && !isNaN(four.getTime())) {
-                            let diffDays = (four.getTime() - birth.getTime()) / (1000 * 60 * 60 * 24);
-                            totalDays += diffDays;
-                            count++;
-
-                            let y = four.getFullYear() - birth.getFullYear();
-                            let m = four.getMonth() - birth.getMonth();
-                            let d = four.getDate() - birth.getDate();
-                            
-                            if (d < 0) {
-                                m--;
-                                let prevMonth = new Date(four.getFullYear(), four.getMonth(), 0); 
-                                d += prevMonth.getDate();
-                            }
-                            if (m < 0) {
-                                y--;
-                                m += 12;
-                            }
-                            
-                            let ageText = `${y}歳${m}ヶ月${d}日`;
-
-                            allData.push({
-                                num: num,
-                                name: name,
-                                birthdayStr: birthdayStr,
-                                fourStr: fourStr,
-                                ageText: ageText,
-                                diffDays: diffDays,      
-                                birthTime: birth.getTime(), 
-                                fourTime: four.getTime()    
-                            });
-                        }
+                        // タイムスタンプ（ミリ秒）を加算
+                        totalBirthTimestamp += birthDate.getTime();
+                        totalFourthTimestamp += fourthDate.getTime();
+                        targetCount++;
                     }
                 }
 
-                // 【修正部分】平均の表示と人数の自動挿入
-                if (count > 0) {
-                    let averageDays = totalDays / count;
-                    document.getElementById('result-age').textContent = daysToYMD(averageDays);
-                    document.getElementById('result-desc').innerHTML = `奨励会三段リーグ開始以降に<br/>四段に昇段した棋士（計${count}名）が対象`;
-                } else {
-                    document.getElementById('result-age').textContent = "-";
-                    document.getElementById('result-desc').textContent = `対象データがありません`;
+                if (targetCount === 0) {
+                    document.getElementById('output').innerHTML = '<p class="error">対象のデータが見つかりませんでした。</p>';
+                    return;
                 }
 
-                renderTable();
-            })
-            .catch(error => {
-                console.error(error);
-                document.getElementById('result-age').textContent = "エラー";
-                document.getElementById('result-desc').textContent = "データの読み込みに失敗しました。";
-            });
+                // タイムスタンプの平均を計算
+                const avgBirthTimestamp = totalBirthTimestamp / targetCount;
+                const avgFourthTimestamp = totalFourthTimestamp / targetCount;
 
-        function renderTable() {
-            const tbody = document.getElementById('table-body');
-            const col3Select = document.getElementById('col3Select');
-            const col3Key = col3Select.value;
-            const col3Text = col3Select.options[col3Select.selectedIndex].text;
+                // 平均日付をDateオブジェクトに変換
+                const avgBirthDate = new Date(avgBirthTimestamp);
+                const avgFourthDate = new Date(avgFourthTimestamp);
 
-            const btn = document.getElementById('sortOrderBtn');
-            btn.textContent = `${col3Text} の ${isAsc ? '昇順 ▲' : '降順 ▼'}`;
+                // 日付の差分から年齢（○年○ヶ月○日）を計算
+                let years = avgFourthDate.getFullYear() - avgBirthDate.getFullYear();
+                let months = avgFourthDate.getMonth() - avgBirthDate.getMonth();
+                let days = avgFourthDate.getDate() - avgBirthDate.getDate();
 
-            allData.sort((a, b) => {
-                let cmp = 0;
-                if (col3Key === 'num') {
-                    cmp = a.num - b.num;
-                } else if (col3Key === 'age') {
-                    cmp = a.diffDays - b.diffDays;
-                } else if (col3Key === 'birthday') {
-                    cmp = a.birthTime - b.birthTime;
-                } else if (col3Key === 'fourth') {
-                    cmp = a.num - b.num; // 日付ではなく棋士番号を基準に並び替える
+                // 日数がマイナスの場合の繰り下げ処理
+                if (days < 0) {
+                    months--;
+                    // 前月の日数を取得して加算
+                    const prevMonth = new Date(avgFourthDate.getFullYear(), avgFourthDate.getMonth(), 0);
+                    days += prevMonth.getDate();
                 }
-                return isAsc ? cmp : -cmp;
-            });
-            
-            tbody.innerHTML = '';
 
-            allData.forEach((data, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="no-col">${index + 1}</td>
-                    <td class="name-col">${data.name}</td>
-                    <td class="data-col">${getColValue(col3Key, data)}</td>
+                // 月数がマイナスの場合の繰り下げ処理
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+
+                // 結果をHTMLに出力
+                const outputHtml = `
+                    <p>対象人数： <strong>${targetCount} 名</strong></p>
+                    <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
+                    <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
+                    <div class="result-box">
+                        <h2>${years}歳 ${months}ヶ月 ${days}日</h2>
+                    </div>
                 `;
-                tbody.appendChild(tr);
-            });
+                document.getElementById('output').innerHTML = outputHtml;
+
+            } catch (error) {
+                document.getElementById('output').innerHTML = `
+                    <p class="error">エラーが発生しました。ローカルサーバー環境で実行しているか、同階層に『kishi-data.txt』が存在するか確認してください。</p>
+                    <p style="font-size: 0.9rem; color: #666;">詳細: ${error.message}</p>
+                `;
+            }
         }
 
-        function getColValue(key, data) {
-            if (key === 'birthday') return data.birthdayStr;
-            if (key === 'fourth') return data.fourStr;
-            if (key === 'age') return data.ageText;
-            if (key === 'num') return data.num;
-            return '';
-        }
-
-        function daysToYMD(totalDays) {
-            let y = Math.floor(totalDays / 365.2425);
-            let rem = totalDays % 365.2425;
-            let m = Math.floor(rem / 30.436875);
-            let d = Math.floor(rem % 30.436875);
-            return `${y}歳${m}ヶ月${d}日`;
-        }
-        
-        document.getElementById('sortOrderBtn').addEventListener('click', function() {
-            isAsc = !isAsc;
-            renderTable();
-        });
-
-        document.getElementById('col3Select').addEventListener('change', function() {
-            isAsc = true; 
-            renderTable();
-        });
+        // 実行
+        calculateAverageAge();
     </script>
+
 </body>
 </html>
