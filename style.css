@@ -2,10 +2,10 @@ body {
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
     background-color: #f7f9fc;
     color: #333;
-    padding: 20px;
+    padding: 20px; /* PCでは適度な余白 */
     display: flex;
-    flex-direction: column; /* ←縦並びに変更 */
-    align-items: center;    /* ←中央揃え */
+    flex-direction: column;
+    align-items: center;
 } /*←body*/
 
 .container {
@@ -48,7 +48,6 @@ p {
     font-weight: bold;
 } /*←.error*/
 
-
 /* ▼ テーブル用のスタイル ▼ */
 .table-container {
     background-color: #fff;
@@ -57,7 +56,7 @@ p {
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     margin-top: 30px;
     width: 100%;
-    max-width: 1000px; /* 出来る限り大きく表示 */
+    max-width: 1000px;
     box-sizing: border-box;
 } /*←.table-container*/
 
@@ -78,13 +77,38 @@ table th {
     font-weight: bold;
 } /*←table th*/
 
-/* スマホ向け（画面幅が600px以下）の場合の調整 */
+/* ▼ スマホ向け（画面幅が600px以下）の場合、画面幅を最大限使う設定 ▼ */
 @media (max-width: 600px) {
+    body {
+        padding: 5px; /* 画面外側の余白を最小限に削る */
+    } /*←body (@media)*/
+
+    .container {
+        padding: 15px 10px; /* コンテナ内側の大きな余白を削る */
+        border-radius: 4px;
+    } /*←.container (@media)*/
+
     .table-container {
-        padding: 10px;
+        padding: 5px; /* テーブル周りの余白も極限まで削る */
+        margin-top: 15px;
+        border-radius: 4px;
     } /*←.table-container (@media)*/
+
+    h1 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    } /*←h1 (@media)*/
+
+    .result-box {
+        padding: 15px;
+    } /*←.result-box (@media)*/
+
+    .result-box h2 {
+        font-size: 1.5rem;
+    } /*←.result-box h2 (@media)*/
+
     table th, table td {
-        padding: 8px 2px; /* 余白を詰める */
-        font-size: 0.85rem; /* フォントサイズを少し小さくして4列収める */
+        padding: 8px 1px; /* セルの横余白を限界まで削って4列を確実に収める */
+        font-size: 0.85rem; 
     } /*←table th, table td (@media)*/
 } /*←@media (max-width: 600px)*/
