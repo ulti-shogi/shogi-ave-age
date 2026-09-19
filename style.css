@@ -1,7 +1,7 @@
 body {
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-    background-color: #f7f9fc;
-    color: #333;
+    background-color: #e4cd9b; /* 盤面を思わせる木の色 */
+    color: #1a1a1a; /* 駒の墨色 */
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -9,88 +9,89 @@ body {
 } /*←body*/
 
 .container {
-    background-color: #fff;
+    background-color: #f4e8c1; /* 少し明るめの木目調 */
     padding: 30px 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 2px; /* 将棋盤らしく丸みを減らす */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     max-width: 600px;
     width: 100%;
     box-sizing: border-box;
+    border: 2px solid #5a3d2b; /* 盤の縁をイメージしたこげ茶 */
 } /*←.container*/
 
 h1 {
     font-size: 1.5rem;
-    border-bottom: 2px solid #2c3e50;
+    border-bottom: 2px solid #5a3d2b;
     padding-bottom: 10px;
     margin-bottom: 20px;
+    color: #3e2723;
 } /*←h1*/
 
 .result-box {
-    background-color: #e8f4f8;
+    background-color: #dfc894; /* 盤面より少し濃い色 */
     padding: 20px;
-    border-radius: 6px;
+    border-radius: 2px;
     margin-top: 20px;
+    border: 1px solid #a68a5c;
 } /*←.result-box*/
 
 .result-box h2 {
     margin: 0 0 10px 0;
-    color: #0056b3;
+    color: #3e2723;
     font-size: 1.8rem;
 } /*←.result-box h2*/
 
 p {
     margin: 8px 0;
     font-size: 1.1rem;
+    font-weight: bold;
 } /*←p*/
 
 .error {
-    color: #d9534f;
+    color: #d32f2f;
     font-weight: bold;
 } /*←.error*/
 
-
-/* ▼ 直接テーブルを装飾して最大化 ▼ */
+/* ▼ テーブル（将棋盤風デザイン） ▼ */
 table {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background-color: #f4e8c1;
     margin-top: 30px;
     width: 100%;
     max-width: 1000px;
     border-collapse: collapse;
-    overflow: hidden; /* 角丸を正しく効かせるため */
+    border: 2px solid #1a1a1a; /* 盤の外枠を太く */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 } /*←table*/
 
 table th, table td {
-    border-bottom: 1px solid #ddd;
+    border: 1px solid #1a1a1a; /* 縦横の黒い目盛り線を追加 */
     padding: 12px 5px;
     text-align: center;
     font-size: 1rem;
+    color: #1a1a1a;
 } /*←table th, table td*/
 
 table th {
-    background-color: #f2f6f9;
+    background-color: #dcb879; /* ヘッダーは一段濃い木の色 */
     font-weight: bold;
 } /*←table th*/
 
 /* スマホ向け（画面幅が600px以下）の場合の調整 */
 @media (max-width: 600px) {
     body {
-        padding: 5px; /* 画面外側の余白を最小限に */
+        padding: 5px;
     } /*←body (@media)*/
 
     .container {
         padding: 15px 10px;
-        border-radius: 4px;
     } /*←.container (@media)*/
 
     table {
         margin-top: 15px;
-        border-radius: 4px;
     } /*←table (@media)*/
 
     table th, table td {
-        padding: 10px 1px; /* 枠が消えた分、少しだけ縦の余白に余裕を持たせる */
+        padding: 10px 1px; 
         font-size: 0.85rem; 
     } /*←table th, table td (@media)*/
 } /*←@media (max-width: 600px)*/
