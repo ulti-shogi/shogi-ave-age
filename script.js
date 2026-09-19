@@ -1,148 +1,89 @@
-// 都道府県ごとの最低賃金（令和7年度・時間額・円）
-const minWage = {
-  "北海道": 1075,
-  "青森県": 1029,
-  "岩手県": 1031,
-  "宮城県": 1038,
-  "秋田県": 1031,
-  "山形県": 1032,
-  "福島県": 1033,
-  "茨城県": 1074,
-  "栃木県": 1068,
-  "群馬県": 1063,
-  "埼玉県": 1141,
-  "千葉県": 1140,
-  "東京都": 1226,
-  "神奈川県": 1225,
-  "新潟県": 1050,
-  "富山県": 1062,
-  "石川県": 1054,
-  "福井県": 1053,
-  "山梨県": 1052,
-  "長野県": 1061,
-  "岐阜県": 1065,
-  "静岡県": 1097,
-  "愛知県": 1140,
-  "三重県": 1087,
-  "滋賀県": 1080,
-  "京都府": 1122,
-  "大阪府": 1177,
-  "兵庫県": 1116,
-  "奈良県": 1051,
-  "和歌山県": 1045,
-  "鳥取県": 1030,
-  "島根県": 1033,
-  "岡山県": 1047,
-  "広島県": 1085,
-  "山口県": 1043,
-  "徳島県": 1046,
-  "香川県": 1036,
-  "愛媛県": 1033,
-  "高知県": 1023,
-  "福岡県": 1057,
-  "佐賀県": 1030,
-  "長崎県": 1031,
-  "熊本県": 1034,
-  "大分県": 1035,
-  "宮崎県": 1023,
-  "鹿児島県": 1026,
-  "沖縄県": 1023
-};
+async function calculateAverageAge() {
+    try {
+        // kishi-data.txt を読み込む
+        const response = await fetch('kishi-data.txt');
+        if (!response.ok) {
+            throw new Error('ファイルの読み込みに失敗しました。');
+        } //←if (!response.ok)
 
-// optgroup用：地方 → 都道府県
-const regions = {
-  "北海道・東北": ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県"],
-  "関東": ["茨城県", "栃木県", "群馬県", "埼玉県", "千葉県", "東京都", "神奈川県"],
-  "中部": ["新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県", "岐阜県", "静岡県", "愛知県"],
-  "近畿": ["三重県", "滋賀県", "京都府", "大阪府", "兵庫県", "奈良県", "和歌山県"],
-  "中国": ["鳥取県", "島根県", "岡山県", "広島県", "山口県"],
-  "四国": ["徳島県", "香川県", "愛媛県", "高知県"],
-  "九州・沖縄": ["福岡県", "佐賀県", "長崎県", "熊本県", "大分県", "宮崎県", "鹿児島県", "沖縄県"]
-};
+        const text = await response.text();
+        const lines = text.trim().split('\n');
+        
+        let targetCount = 0;
+        let totalBirthTimestamp = 0;
+        let totalFourthTimestamp = 0;
 
-window.addEventListener("DOMContentLoaded", () => {
-  const prefSelect = document.getElementById("pref");
+        // ヘッダー行（0行目）を飛ばしてループ処理
+        for (let i = 1; i < lines.length; i++) {
+            const cols = lines[i].split(',');
+            if (cols.length < 4) continue;
 
-  // 先頭の「選択してください」が無い場合は追加
-  const hasDefault = Array.from(prefSelect.options).some(opt => opt.value === "");
-  if (!hasDefault) {
-    const defaultOpt = document.createElement("option");
-    defaultOpt.value = "";
-    defaultOpt.textContent = "選択してください";
-    prefSelect.appendChild(defaultOpt);
-  }
+            const num = parseInt(cols[0], 10);
+            
+            // 棋士番号184以降のみを対象とする
+            if (num >= 184) {
+                // ハイフンをスラッシュに置換して、時差による日付のズレ（+9時間）を防ぐ
+                const birthDate = new Date(cols[2].replace(/-/g, '/'));
+                const fourthDate = new Date(cols[3].replace(/-/g, '/'));
+                
+                // タイムスタンプ（ミリ秒）を加算
+                totalBirthTimestamp += birthDate.getTime();
+                totalFourthTimestamp += fourthDate.getTime();
+                targetCount++;
+            } //←if (num >= 184)
+        } //←for (let i = 1; i < lines.length; i++)
 
-  // optgroupを追加
-  Object.keys(regions).forEach(regionName => {
-    const group = document.createElement("optgroup");
-    group.label = regionName;
+        if (targetCount === 0) {
+            document.getElementById('output').innerHTML = '<p class="error">対象のデータが見つかりませんでした。</p>';
+            return;
+        } //←if (targetCount === 0)
 
-    regions[regionName].forEach(pref => {
-      const option = document.createElement("option");
-      option.value = pref;
-      option.textContent = pref;
-      group.appendChild(option);
-    });
+        // タイムスタンプの平均を計算
+        const avgBirthTimestamp = totalBirthTimestamp / targetCount;
+        const avgFourthTimestamp = totalFourthTimestamp / targetCount;
 
-    prefSelect.appendChild(group);
-  });
-});
+        // 平均日付をDateオブジェクトに変換
+        const avgBirthDate = new Date(avgBirthTimestamp);
+        const avgFourthDate = new Date(avgFourthTimestamp);
 
-document.getElementById("calcButton").addEventListener("click", () => {
-  const pref = document.getElementById("pref").value;
-  const myWage = Number(document.getElementById("wage").value);
-  const result = document.getElementById("result");
+        // 日付の差分から年齢（○年○ヶ月○日）を計算
+        let years = avgFourthDate.getFullYear() - avgBirthDate.getFullYear();
+        let months = avgFourthDate.getMonth() - avgBirthDate.getMonth();
+        let days = avgFourthDate.getDate() - avgBirthDate.getDate();
 
-  // 初期化
-  result.style.color = "";
-  result.innerHTML = "";
+        // 日数がマイナスの場合の繰り下げ処理
+        if (days < 0) {
+            months--;
+            // 前月の日数を取得して加算
+            const prevMonth = new Date(avgFourthDate.getFullYear(), avgFourthDate.getMonth(), 0);
+            days += prevMonth.getDate();
+        } //←if (days < 0)
 
-  if (!pref) {
-    result.textContent = "都道府県を選択してください。";
-    return;
-  }
+        // 月数がマイナスの場合の繰り下げ処理
+        if (months < 0) {
+            years--;
+            months += 12;
+        } //←if (months < 0)
 
-  if (!myWage || myWage <= 0) {
-    result.textContent = "有効な時給を入力してください。";
-    return;
-  }
+        // 結果をHTMLに出力
+        const outputHtml = `
+            <p>対象人数： <strong>${targetCount} 名</strong></p>
+            <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
+            <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
+            <div class="result-box">
+                <h2>${years}歳 ${months}ヶ月 ${days}日</h2>
+            </div><!--←.result-box-->
+        `;
+        document.getElementById('output').innerHTML = outputHtml;
 
-  const base = minWage[pref];
-  if (!base) {
-    result.textContent = "この都道府県の最低賃金データが見つかりません。";
-    return;
-  }
+    } //←try
+    catch (error) {
+        document.getElementById('output').innerHTML = `
+            <p class="error">エラーが発生しました。ローカルサーバー環境で実行しているか、同階層に『kishi-data.txt』が存在するか確認してください。</p>
+            <p style="font-size: 0.9rem; color: #666;">詳細: ${error.message}</p>
+        `;
+    } //←catch (error)
+} //←async function calculateAverageAge()
 
-  // 事実表示（pタグで淡々と）
-  const factsHtml =
-    `<p>入力された時給：${myWage}円</p>` +
-    `<p>${pref}の最低賃金：${base}円</p>`;
-
-  // 判定（下回り時は％表現を出さない）
-  if (myWage >= base) {
-    const percentUp = ((myWage - base) / base) * 100;
-    const conclusion =
-      `<p>あなたの時給は、${pref}の最低賃金の<strong>${percentUp.toFixed(2)}％</strong>増しの金額です。</p>`;
-
-    const note =
-      `<p style="margin-top:12px;font-size:0.9em;color:#555;">` +
-      `※金額は厚生労働省「令和7年度 地域別最低賃金 全国一覧」に基づきます。<br>` +
-      `※将来改定された場合は、このツールの数値も更新が必要です。` +
-      `</p>`;
-
-    result.innerHTML = `<p><strong>【結果】</strong></p>` + factsHtml + conclusion + note;
-  } else {
-    result.style.color = "red";
-
-    const conclusion =
-      `<p>あなたの時給は、${pref}の最低賃金を下回っています。</p>`;
-
-    const note =
-      `<p style="margin-top:12px;font-size:0.9em;color:#555;">` +
-      `※金額は厚生労働省「令和7年度 地域別最低賃金 全国一覧」に基づきます。<br>` +
-      `※将来改定された場合は、このツールの数値も更新が必要です。` +
-      `</p>`;
-
-    result.innerHTML = `<p><strong>【結果】</strong></p>` + factsHtml + conclusion + note;
-  }
-});
+// 実行
+calculateAverageAge();

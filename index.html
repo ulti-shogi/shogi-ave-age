@@ -4,145 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>将棋棋士 四段昇段平均年齢</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-            background-color: #f7f9fc;
-            color: #333;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .container {
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        h1 {
-            font-size: 1.5rem;
-            border-bottom: 2px solid #2c3e50;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .result-box {
-            background-color: #e8f4f8;
-            padding: 20px;
-            border-radius: 6px;
-            margin-top: 20px;
-        }
-        .result-box h2 {
-            margin: 0 0 10px 0;
-            color: #0056b3;
-            font-size: 1.8rem;
-        }
-        p {
-            margin: 8px 0;
-            font-size: 1.1rem;
-        }
-        .error {
-            color: #d9534f;
-            font-weight: bold;
-        }
-    </style>
-</head>
+    <!-- CSSファイルを読み込む -->
+    <link rel="stylesheet" href="style.css">
+</head><!--←head-->
 <body>
 
     <div class="container">
-        <h1>棋士番号184以降の四段昇段平均年齢</h1>
-        <div id="output">データを計算中です...</div>
-    </div>
+        <h1>棋士番号184以降の将棋棋士の四段昇段平均年齢</h1>
+        <div id="output">データを計算中です...</div><!--←#output-->
+    </div><!--←.container-->
 
-    <script>
-        async function calculateAverageAge() {
-            try {
-                // kishi-data.txt を読み込む
-                const response = await fetch('kishi-data.txt');
-                if (!response.ok) {
-                    throw new Error('ファイルの読み込みに失敗しました。');
-                }
-                const text = await response.text();
-                const lines = text.trim().split('\n');
-                
-                let targetCount = 0;
-                let totalBirthTimestamp = 0;
-                let totalFourthTimestamp = 0;
-
-                // ヘッダー行（0行目）を飛ばしてループ処理
-                for (let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(',');
-                    if (cols.length < 4) continue;
-
-                    const num = parseInt(cols[0], 10);
-                    
-                    // 棋士番号184以降のみを対象とする
-                    if (num >= 184) {
-            const birthDate = new Date(cols[2].replace(/-/g, '/'));
-            const fourthDate = new Date(cols[3].replace(/-/g, '/'));
-                        
-                        // タイムスタンプ（ミリ秒）を加算
-                        totalBirthTimestamp += birthDate.getTime();
-                        totalFourthTimestamp += fourthDate.getTime();
-                        targetCount++;
-                    }
-                }
-
-                if (targetCount === 0) {
-                    document.getElementById('output').innerHTML = '<p class="error">対象のデータが見つかりませんでした。</p>';
-                    return;
-                }
-
-                // タイムスタンプの平均を計算
-                const avgBirthTimestamp = totalBirthTimestamp / targetCount;
-                const avgFourthTimestamp = totalFourthTimestamp / targetCount;
-
-                // 平均日付をDateオブジェクトに変換
-                const avgBirthDate = new Date(avgBirthTimestamp);
-                const avgFourthDate = new Date(avgFourthTimestamp);
-
-                // 日付の差分から年齢（○年○ヶ月○日）を計算
-                let years = avgFourthDate.getFullYear() - avgBirthDate.getFullYear();
-                let months = avgFourthDate.getMonth() - avgBirthDate.getMonth();
-                let days = avgFourthDate.getDate() - avgBirthDate.getDate();
-
-                // 日数がマイナスの場合の繰り下げ処理
-                if (days < 0) {
-                    months--;
-                    // 前月の日数を取得して加算
-                    const prevMonth = new Date(avgFourthDate.getFullYear(), avgFourthDate.getMonth(), 0);
-                    days += prevMonth.getDate();
-                }
-
-                // 月数がマイナスの場合の繰り下げ処理
-                if (months < 0) {
-                    years--;
-                    months += 12;
-                }
-
-                // 結果をHTMLに出力
-                const outputHtml = `
-                    <p>対象人数： <strong>${targetCount} 名</strong></p>
-                    <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
-                    <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
-                    <div class="result-box">
-                        <h2>${years}歳 ${months}ヶ月 ${days}日</h2>
-                    </div>
-                `;
-                document.getElementById('output').innerHTML = outputHtml;
-
-            } catch (error) {
-                document.getElementById('output').innerHTML = `
-                    <p class="error">エラーが発生しました。ローカルサーバー環境で実行しているか、同階層に『kishi-data.txt』が存在するか確認してください。</p>
-                    <p style="font-size: 0.9rem; color: #666;">詳細: ${error.message}</p>
-                `;
-            }
-        }
-
-        // 実行
-        calculateAverageAge();
-    </script>
-
-</body>
-</html>
+    <!-- JavaScriptファイルを読み込む -->
+    <script src="script.js"></script>
+</body><!--←body-->
+</html><!--←html-->
