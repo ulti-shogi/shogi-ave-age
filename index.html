@@ -10,19 +10,18 @@
 <body>
 
     <div class="container">
-        <h1>将棋棋士の四段昇段平均年齢</h1>
+        <h1>棋士番号184以降の四段昇段平均年齢</h1>
         <div id="output">データを計算中です...</div><!--←#output-->
     </div><!--←.container-->
 
-    <!-- ▼ テーブルコンテナを廃止し、直接テーブルを配置 ▼ -->
     <table>
         <thead>
             <tr>
                 <th></th>
-                <th>棋士名</th>
-                <th>四段昇段年齢</th>
-                <th>棋士番号</th>
-            </tr>
+                <th>棋士名 <br><button class="sort-btn" data-col="name" data-order="none">▲▼</button></th>
+                <th>四段昇段年齢 <br><button class="sort-btn" data-col="age" data-order="none">▲▼</button></th>
+                <th>棋士番号 <br><button class="sort-btn" data-col="num" data-order="asc">▲</button></th>
+            </tr><!--←tr-->
         </thead><!--←thead-->
         <tbody id="table-body">
             <!-- ここにJavaScriptでテーブルの中身が挿入されます -->

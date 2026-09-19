@@ -1,7 +1,7 @@
 body {
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-    background-color: #e4cd9b; /* 盤面を思わせる木の色 */
-    color: #1a1a1a; /* 駒の墨色 */
+    background-color: #e4cd9b;
+    color: #1a1a1a;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -9,14 +9,14 @@ body {
 } /*←body*/
 
 .container {
-    background-color: #f4e8c1; /* 少し明るめの木目調 */
+    background-color: #f4e8c1;
     padding: 30px 40px;
-    border-radius: 2px; /* 将棋盤らしく丸みを減らす */
+    border-radius: 2px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     max-width: 600px;
     width: 100%;
     box-sizing: border-box;
-    border: 2px solid #5a3d2b; /* 盤の縁をイメージしたこげ茶 */
+    border: 2px solid #5a3d2b;
 } /*←.container*/
 
 h1 {
@@ -28,7 +28,7 @@ h1 {
 } /*←h1*/
 
 .result-box {
-    background-color: #dfc894; /* 盤面より少し濃い色 */
+    background-color: #dfc894;
     padding: 20px;
     border-radius: 2px;
     margin-top: 20px;
@@ -59,12 +59,12 @@ table {
     width: 100%;
     max-width: 1000px;
     border-collapse: collapse;
-    border: 2px solid #1a1a1a; /* 盤の外枠を太く */
+    border: 2px solid #1a1a1a;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 } /*←table*/
 
 table th, table td {
-    border: 1px solid #1a1a1a; /* 縦横の黒い目盛り線を追加 */
+    border: 1px solid #1a1a1a;
     padding: 12px 5px;
     text-align: center;
     font-size: 1rem;
@@ -72,9 +72,27 @@ table th, table td {
 } /*←table th, table td*/
 
 table th {
-    background-color: #dcb879; /* ヘッダーは一段濃い木の色 */
+    background-color: #dcb879;
     font-weight: bold;
 } /*←table th*/
+
+/* ▼ ソートボタン用のスタイル ▼ */
+.sort-btn {
+    background-color: #c4a162;
+    border: 1px solid #5a3d2b;
+    border-radius: 2px;
+    color: #1a1a1a;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    margin-top: 5px;
+    display: inline-block;
+    transition: background-color 0.2s;
+} /*←.sort-btn*/
+
+.sort-btn:hover {
+    background-color: #b58d4a;
+} /*←.sort-btn:hover*/
 
 /* スマホ向け（画面幅が600px以下）の場合の調整 */
 @media (max-width: 600px) {
@@ -94,4 +112,9 @@ table th {
         padding: 10px 1px; 
         font-size: 0.85rem; 
     } /*←table th, table td (@media)*/
+
+    .sort-btn {
+        padding: 2px 4px; /* スマホではボタンも少し小さく */
+        font-size: 0.7rem;
+    } /*←.sort-btn (@media)*/
 } /*←@media (max-width: 600px)*/
