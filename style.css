@@ -1,7 +1,5 @@
 body {
     font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-    background-color: #e4cd9b;
-    color: #1a1a1a;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -10,47 +8,38 @@ body {
 
 h1 {
     font-size: 1.8rem;
-    color: #3e2723;
     text-align: center;
     margin-bottom: 20px;
     margin-top: 10px;
-    border-bottom: 2px solid #5a3d2b;
     padding-bottom: 10px;
     width: 100%;
     max-width: 600px;
 } /*←h1*/
 
 .container {
-    background-color: #f4e8c1;
     padding: 30px 40px;
     border-radius: 2px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     max-width: 600px;
     width: 100%;
     box-sizing: border-box;
-    border: 2px solid #5a3d2b;
 } /*←.container*/
 
-/* ▼ 新しい結果ボックスのスタイル ▼ */
 .result-box {
-    background-color: #dfc894;
-    padding: 30px 20px; /* 上下の余白を広めに */
+    padding: 30px 20px;
     border-radius: 2px;
     margin-top: 10px;
-    border: 1px solid #a68a5c;
-    text-align: center; /* 中央寄せ */
+    text-align: center;
 } /*←.result-box*/
 
 .result-title {
     font-size: 1.1rem;
-    color: #3e2723;
     font-weight: bold;
     margin-bottom: 15px;
 } /*←.result-title*/
 
 .result-age {
-    font-size: 2.8rem; /* 平均年齢を大きく表示 */
-    color: #3e2723;
+    font-size: 2.8rem;
     font-weight: bold;
     margin-bottom: 15px;
     line-height: 1.2;
@@ -58,7 +47,6 @@ h1 {
 
 .result-desc {
     font-size: 0.9rem;
-    color: #5a3d2b;
 } /*←.result-desc*/
 
 .avg-dates {
@@ -70,45 +58,40 @@ h1 {
     margin: 5px 0;
     font-size: 1rem;
     font-weight: normal;
-    color: #3e2723;
 } /*←.avg-dates p*/
 
-/* ▼ エラー文字スタイル ▼ */
+p {
+    margin: 8px 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+} /*←p*/
+
 .error {
-    color: #d32f2f;
     font-weight: bold;
 } /*←.error*/
 
 /* ▼ テーブル（将棋盤風デザイン） ▼ */
 table {
-    background-color: #f4e8c1;
     margin-top: 30px;
     width: 100%;
     max-width: 1000px;
     border-collapse: collapse;
-    border: 2px solid #1a1a1a;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 } /*←table*/
 
 table th, table td {
-    border: 1px solid #1a1a1a;
     padding: 12px 5px;
     text-align: center;
     font-size: 1rem;
-    color: #1a1a1a;
 } /*←table th, table td*/
 
 table th {
-    background-color: #dcb879;
     font-weight: bold;
 } /*←table th*/
 
 /* ▼ ソートボタン用のスタイル ▼ */
 .sort-btn {
-    background-color: #c4a162;
-    border: 1px solid #5a3d2b;
     border-radius: 2px;
-    color: #1a1a1a;
     cursor: pointer;
     font-size: 0.75rem;
     padding: 2px 8px;
@@ -116,10 +99,6 @@ table th {
     display: inline-block;
     transition: background-color 0.2s;
 } /*←.sort-btn*/
-
-.sort-btn:hover {
-    background-color: #b58d4a;
-} /*←.sort-btn:hover*/
 
 /* スマホ向け（画面幅が600px以下）の場合の調整 */
 @media (max-width: 600px) {
@@ -143,7 +122,7 @@ table th {
     } /*←.result-box (@media)*/
 
     .result-age {
-        font-size: 2rem; /* スマホでは少し小さくして画面に収める */
+        font-size: 2rem;
     } /*←.result-age (@media)*/
 
     .result-desc {

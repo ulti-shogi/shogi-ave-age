@@ -1,0 +1,67 @@
+/* ▼ 背景色・文字色・枠線色など、色に関する設定まとめ ▼ */
+
+body {
+    background-color: #e4cd9b; /* 画面全体の背景色 */
+    color: #1a1a1a;            /* 全体の基本文字色 */
+} /*←body*/
+
+h1 {
+    color: #3e2723;                    /* タイトルの文字色 */
+    border-bottom: 2px solid #5a3d2b; /* タイトルの下線色 */
+} /*←h1*/
+
+.container {
+    background-color: #f4e8c1; /* コンテナの背景色 */
+    border: 2px solid #5a3d2b; /* コンテナの外枠色 */
+} /*←.container*/
+
+.result-box {
+    background-color: #dfc894; /* 平均年齢を囲む箱の背景色 */
+    border: 1px solid #a68a5c; /* その枠線色 */
+} /*←.result-box*/
+
+.result-title {
+    color: #3e2723; /* 箱内のタイトル文字色 */
+} /*←.result-title*/
+
+.result-age {
+    color: #3e2723; /* 平均年齢の大きな文字色 */
+} /*←.result-age*/
+
+.result-desc {
+    color: #5a3d2b; /* 箱内の説明文の文字色 */
+} /*←.result-desc*/
+
+.avg-dates p {
+    color: #3e2723; /* 生年月日・四段昇段平均日付の文字色 */
+} /*←.avg-dates p*/
+
+.error {
+    color: #d32f2f; /* エラーメッセージの文字色 */
+} /*←.error*/
+
+/* ▼ テーブル関連の色 ▼ */
+table {
+    background-color: #f4e8c1; /* テーブル全体の背景色 */
+    border: 2px solid #1a1a1a; /* テーブルの外枠色 */
+} /*←table*/
+
+table th, table td {
+    border: 1px solid #1a1a1a; /* セルの枠線（目盛り線）色 */
+    color: #1a1a1a;            /* セル内の文字色 */
+} /*←table th, table td*/
+
+table th {
+    background-color: #dcb879; /* ヘッダー（見出し行）の背景色 */
+} /*←table th*/
+
+/* ▼ ソートボタンの色 ▼ */
+.sort-btn {
+    background-color: #c4a162; /* ボタンの背景色 */
+    border: 1px solid #5a3d2b; /* ボタンの枠線色 */
+    color: #1a1a1a;            /* ボタンの文字色 */
+} /*←.sort-btn*/
+
+.sort-btn:hover {
+    background-color: #b58d4a; /* マウスを乗せた時のボタン背景色 */
+} /*←.sort-btn:hover*/
