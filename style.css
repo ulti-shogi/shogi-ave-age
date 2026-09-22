@@ -16,20 +16,21 @@ h1 {
     max-width: 600px;
 } /*←h1*/
 
-.container {
-    padding: 30px 40px;
-    border-radius: 2px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    max-width: 600px;
+/* ▼ outputコンテナ（結果と説明文を束ねる枠） ▼ */
+#output {
     width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
-} /*←.container*/
+} /*←#output*/
 
 .result-box {
     padding: 30px 20px;
     border-radius: 2px;
-    margin-top: 10px;
     text-align: center;
+    width: 100%;
+    box-sizing: border-box;
 } /*←.result-box*/
 
 .result-title {
@@ -49,16 +50,13 @@ h1 {
     font-size: 0.9rem;
 } /*←.result-desc*/
 
-.avg-dates {
-    margin-top: 20px;
-    text-align: center;
-} /*←.avg-dates*/
-
-.avg-dates p {
-    margin: 5px 0;
-    font-size: 1rem;
-    font-weight: normal;
-} /*←.avg-dates p*/
+/* ▼ 計算方法の説明文スタイル ▼ */
+.calc-desc {
+    margin-top: 15px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 0 10px;
+} /*←.calc-desc*/
 
 p {
     margin: 8px 0;
@@ -68,6 +66,7 @@ p {
 
 .error {
     font-weight: bold;
+    text-align: center;
 } /*←.error*/
 
 /* ▼ テーブル（将棋盤風デザイン） ▼ */
@@ -83,7 +82,6 @@ table th, table td {
     padding: 12px 5px;
     text-align: center;
     font-size: 1rem;
-    /* ▼ 半角スペースと数字幅を美しく揃えるための追加設定 ▼ */
     white-space: pre-wrap;
     font-variant-numeric: tabular-nums; 
 } /*←table th, table td*/
@@ -116,9 +114,9 @@ table th {
         padding-bottom: 0;
     } /*←h1 (@media)*/
 
-    .container {
-        padding: 15px 10px;
-    } /*←.container (@media)*/
+    #output {
+        padding: 0 5px;
+    } /*←#output (@media)*/
 
     .result-box {
         padding: 20px 10px;
@@ -131,6 +129,10 @@ table th {
     .result-desc {
         font-size: 0.8rem;
     } /*←.result-desc (@media)*/
+
+    .calc-desc {
+        font-size: 0.85rem;
+    } /*←.calc-desc (@media)*/
 
     table {
         margin-top: 15px;

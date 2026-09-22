@@ -3,7 +3,6 @@ let kishiList = [];
 
 async function initializeApp() {
     try {
-        // ▼ 2つのファイルを同時に読み込む ▼
         const [dataRes, leagueRes] = await Promise.all([
             fetch('kishi-data.txt'),
             fetch('3dan-league.txt')
@@ -16,18 +15,15 @@ async function initializeApp() {
         const dataText = await dataRes.text();
         const leagueText = await leagueRes.text();
 
-        // ▼ 3dan-league.txt を解析し、棋士番号とふりがなを紐づけるMapを作成 ▼
         const readingMap = new Map();
         const leagueLines = leagueText.trim().split('\n');
         for (let i = 1; i < leagueLines.length; i++) {
             const cols = leagueLines[i].split(',');
             if (cols.length >= 2) {
-                // 棋士番号(num)をキーにして、ふりがな(reading)を保存
                 readingMap.set(parseInt(cols[0], 10), cols[1]);
             } //←if (cols.length >= 2)
         } //←for (let i = 1; i < leagueLines.length; i++)
 
-        // ▼ kishi-data.txt の解析と計算 ▼
         const lines = dataText.trim().split('\n');
         let targetCount = 0;
         let totalBirthTimestamp = 0;
@@ -62,18 +58,16 @@ async function initializeApp() {
                     months += 12;
                 } //←if (months < 0)
 
-                // ▼ 1桁の場合に半角スペースを付与する処理を追加 ▼
                 const strMonths = months < 10 ? ' ' + months : months;
                 const strDays = days < 10 ? ' ' + days : days;
 
-                // 正確な年齢の並び替え用に、純粋な期間（ミリ秒）も保存
                 const ageMs = fourthDate.getTime() - birthDate.getTime();
 
                 kishiList.push({
                     num: num,
                     name: cols[1],
-                    reading: readingMap.get(num) || '', // Mapからふりがなを取得
-                    ageStr: `${years}歳${strMonths}ヶ月${strDays}日`, // 変更
+                    reading: readingMap.get(num) || '',
+                    ageStr: `${years}歳${strMonths}ヶ月${strDays}日`,
                     ageMs: ageMs
                 }); //←kishiList.push
             } //←if (num >= 184)
@@ -84,7 +78,6 @@ async function initializeApp() {
             return;
         } //←if (targetCount === 0)
 
-        // 平均計算と上部結果表示
         const avgBirthDate = new Date(totalBirthTimestamp / targetCount);
         const avgFourthDate = new Date(totalFourthTimestamp / targetCount);
 
@@ -103,20 +96,19 @@ async function initializeApp() {
             avgMonths += 12;
         } //←if (avgMonths < 0)
 
+        // ▼ HTML出力を変更（計算方法の説明文を追加） ▼
         const outputHtml = `
             <div class="result-box">
                 <div class="result-title">将棋棋士の四段昇段平均年齢</div>
                 <div class="result-age">${avgYears}歳 ${avgMonths}ヶ月 ${avgDays}日</div>
                 <div class="result-desc">現行の奨励会三段リーグ開始以降に四段に昇段した計${targetCount}名が対象</div>
             </div><!--←.result-box-->
-            <div class="avg-dates">
-                <p>生年月日の平均日付： ${avgBirthDate.toLocaleDateString('ja-JP')}</p>
-                <p>四段昇段の平均日付： ${avgFourthDate.toLocaleDateString('ja-JP')}</p>
-            </div><!--←.avg-dates-->
+            <div class="calc-desc">
+                ※算出された平均年齢は、対象棋士の「生年月日の平均（${avgBirthDate.toLocaleDateString('ja-JP')}）」から「四段昇段日の平均（${avgFourthDate.toLocaleDateString('ja-JP')}）」までの期間を計算したものです。
+            </div><!--←.calc-desc-->
         `;
         document.getElementById('output').innerHTML = outputHtml;
 
-        // 初期表示とソートイベントの設定
         kishiList.sort((a, b) => a.num - b.num);
         renderTable();
         setupSortButtons();
@@ -130,7 +122,6 @@ async function initializeApp() {
     } //←catch (error)
 } //←async function initializeApp()
 
-// テーブル描画処理
 function renderTable() {
     let tableRowsHtml = '';
     for (let i = 0; i < kishiList.length; i++) {
@@ -147,7 +138,6 @@ function renderTable() {
     document.getElementById('table-body').innerHTML = tableRowsHtml;
 } //←function renderTable()
 
-// ソートボタンのクリックイベント設定
 function setupSortButtons() {
     const btns = document.querySelectorAll('.sort-btn');
     
@@ -156,24 +146,20 @@ function setupSortButtons() {
             const col = btn.getAttribute('data-col');
             let order = btn.getAttribute('data-order');
             
-            // 昇順/降順を切り替え
             if (order === 'asc') {
                 order = 'desc';
             } else {
                 order = 'asc';
             } //←if (order === 'asc')
 
-            // 全ボタンのリセット
             btns.forEach(b => {
                 b.setAttribute('data-order', 'none');
                 b.innerText = '▲▼';
             }); //←btns.forEach(b => ...)
 
-            // クリックされたボタンの表示更新
             btn.setAttribute('data-order', order);
             btn.innerText = order === 'asc' ? '▲' : '▼';
 
-            // リストの並び替え実行
             kishiList.sort((a, b) => {
                 let valA, valB;
                 
@@ -181,7 +167,7 @@ function setupSortButtons() {
                     valA = a.reading;
                     valB = b.reading;
                 } else if (col === 'age') {
-                    valA = a.ageMs; // 正確なミリ秒で比較
+                    valA = a.ageMs;
                     valB = b.ageMs;
                 } else {
                     valA = a.num;
@@ -193,11 +179,9 @@ function setupSortButtons() {
                 return 0;
             }); //←kishiList.sort
 
-            // 並び替え後のリストでテーブル再描画
             renderTable();
         }); //←btn.addEventListener
     }); //←btns.forEach(btn => ...)
 } //←function setupSortButtons()
 
-// 実行
 initializeApp();
