@@ -83,6 +83,9 @@ table th, table td {
     padding: 12px 5px;
     text-align: center;
     font-size: 1rem;
+    /* ▼ 半角スペースと数字幅を美しく揃えるための追加設定 ▼ */
+    white-space: pre-wrap;
+    font-variant-numeric: tabular-nums; 
 } /*←table th, table td*/
 
 table th {

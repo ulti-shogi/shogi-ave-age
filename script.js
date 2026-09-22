@@ -62,6 +62,10 @@ async function initializeApp() {
                     months += 12;
                 } //←if (months < 0)
 
+                // ▼ 1桁の場合に半角スペースを付与する処理を追加 ▼
+                const strMonths = months < 10 ? ' ' + months : months;
+                const strDays = days < 10 ? ' ' + days : days;
+
                 // 正確な年齢の並び替え用に、純粋な期間（ミリ秒）も保存
                 const ageMs = fourthDate.getTime() - birthDate.getTime();
 
@@ -69,7 +73,7 @@ async function initializeApp() {
                     num: num,
                     name: cols[1],
                     reading: readingMap.get(num) || '', // Mapからふりがなを取得
-                    ageStr: `${years}歳${months}ヶ月${days}日`,
+                    ageStr: `${years}歳${strMonths}ヶ月${strDays}日`, // 変更
                     ageMs: ageMs
                 }); //←kishiList.push
             } //←if (num >= 184)
@@ -99,7 +103,6 @@ async function initializeApp() {
             avgMonths += 12;
         } //←if (avgMonths < 0)
 
-        // ▼ ご要望に合わせてHTML出力を変更 ▼
         const outputHtml = `
             <div class="result-box">
                 <div class="result-title">将棋棋士の四段昇段平均年齢</div>
